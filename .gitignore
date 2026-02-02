@@ -8,3 +8,4 @@ terraform_proxmox.bash
 .vscode
 *.txt
 tofu*
+.old
