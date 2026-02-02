@@ -2,7 +2,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = "~> 0.87.0"
+      version = "~> 0.93.0"
     }
     vault = {
       source  = "hashicorp/vault"
@@ -14,7 +14,9 @@ terraform {
 }
 
 provider "proxmox" {
-  endpoint  = data.vault_kv_secret_v2.proxmox_auth.data["ENDPOINT"]
-  api_token = data.vault_kv_secret_v2.proxmox_auth.data["API_TOKEN"]
-  insecure  = true
+  endpoint = data.vault_kv_secret_v2.proxmox_auth.data["ENDPOINT"]
+  # api_token = data.vault_kv_secret_v2.proxmox_auth.data["API_TOKEN"]
+  username = "root@pam"
+  password = "Maciej013!"
+  insecure = true
 }
