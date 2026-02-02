@@ -1,0 +1,10 @@
+.devcontainer
+.userfiles
+terraform_proxmox.bash
+.terraform
+.terraform*
+.scripts
+.envrc
+.vscode
+*.txt
+tofu*
