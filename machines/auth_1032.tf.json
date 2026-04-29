@@ -1,0 +1,49 @@
+{
+  "module": {
+    "auth_1032": {
+      "source": "git::https://gitlab.com/pl.rachuna-net/artifacts/opentofu/proxmox-container.git?ref=v1.0.3",
+      "hostname": "auth-1032.rachuna-net.pl",
+      "description": "gitlab-runner s3",
+      "node_name": "pve-s3",
+      "ct_id": 1032,
+      "pool_id": "sql",
+      "protection": true,
+      "start_on_boot": true,
+      "tags": ["auth", "authentik", "ubuntu"],
+      "unprivileged": false,
+      "is_dmz": true,
+      "cpu_cores": 2,
+      "mac_address": "BC:24:11:C7:2A:27",
+      "memory": {
+        "dedicated": 2048,
+        "swap": 0
+      },
+      "disk": {
+        "storage_name": "storage.rachuna-net.pl",
+        "disk_size": 16
+      },
+      "operating_system": {
+        "template_file": "${join(\"/\", [local.ct_storage_name, \"ubuntu-24.04.tar.zst\"])}",
+        "type": "ubuntu"
+      },
+      "features": {
+        "keyctl": true,
+        "nesting": true
+      },
+      "user_account": {
+        "username": "${local.user_account.username}",
+        "password": "${local.user_account.password}",
+        "public_ssh_key": "${local.user_account.public_ssh_key}"
+      }
+    }
+  },
+  "resource": {
+    "vault_kv_secret_v2": {
+      "auth-1032_credentials": {
+        "mount": "pl.rachuna-net",
+        "name": "infrastructure/pve-rachuna-net/iac-proxmox/machine/1032",
+        "data_json": "${jsonencode({root_password = module.auth_1032.root_password, root_private_key = module.auth_1032.root_private_key, root_public_key = module.auth_1032.root_public_key, container_ipv4 = module.auth_1032.container_ipv4})}"
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "module": {
+    "gitlab_runner_1027": {
+      "source": "git::https://gitlab.com/pl.rachuna-net/artifacts/opentofu/proxmox-container.git?ref=v1.0.3",
+      "hostname": "gitlab-runner-1027.rachuna-net.pl",
+      "description": "gitlab-runner s4",
+      "node_name": "pve-s4",
+      "ct_id": 1027,
+      "pool_id": "gitlab",
+      "protection": true,
+      "start_on_boot": true,
+      "tags": ["gitlab-runner", "ubuntu"],
+      "unprivileged": false,
+      "is_dmz": true,
+      "mac_address": "BC:24:11:0F:BD:62",
+      "cpu_cores": 4,
+      "memory": {
+        "dedicated": 4096,
+        "swap": 0
+      },
+      "disk": {
+        "storage_name": "storage",
+        "disk_size": 128
+      },
+      "operating_system": {
+        "template_file": "${join(\"/\", [local.ct_storage_name, \"ubuntu-24.04.tar.zst\"])}",
+        "type": "ubuntu"
+      },
+      "features": {
+        "keyctl": true,
+        "nesting": true
+      },
+      "user_account": {
+        "username": "${local.user_account.username}",
+        "password": "${local.user_account.password}",
+        "public_ssh_key": "${local.user_account.public_ssh_key}"
+      }
+    }
+  },
+  "resource": {
+    "vault_kv_secret_v2": {
+      "gitlab_runner_1027_credentials": {
+        "mount": "pl.rachuna-net",
+        "name": "infrastructure/pve-rachuna-net/iac-proxmox/machine/1024",
+        "data_json": "${jsonencode({root_password = module.gitlab_runner_1027.root_password, root_private_key = module.gitlab_runner_1027.root_private_key, root_public_key = module.gitlab_runner_1027.root_public_key, container_ipv4 = module.gitlab_runner_1027.container_ipv4})}"
+      }
+    }
+  }
+}
