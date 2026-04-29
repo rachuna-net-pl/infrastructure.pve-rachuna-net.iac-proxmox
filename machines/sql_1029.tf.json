@@ -1,0 +1,49 @@
+{
+  "module": {
+    "sql_1029": {
+      "source": "git::https://gitlab.com/pl.rachuna-net/artifacts/opentofu/proxmox-container.git?ref=v1.0.3",
+      "hostname": "sql-1029.rachuna-net.pl",
+      "description": "gitlab-runner s3",
+      "node_name": "pve-s3",
+      "ct_id": 1029,
+      "pool_id": "sql",
+      "protection": true,
+      "start_on_boot": true,
+      "tags": ["pg", "sql", "ubuntu"],
+      "unprivileged": false,
+      "is_dmz": true,
+      "mac_address": "BC:24:11:B1:FD:F8",
+      "cpu_cores": 2,
+      "memory": {
+        "dedicated": 1024,
+        "swap": 0
+      },
+      "disk": {
+        "storage_name": "storage",
+        "disk_size": 16
+      },
+      "operating_system": {
+        "template_file": "${join(\"/\", [local.ct_storage_name, \"ubuntu-24.04.tar.zst\"])}",
+        "type": "ubuntu"
+      },
+      "features": {
+        "keyctl": true,
+        "nesting": true
+      },
+      "user_account": {
+        "username": "${local.user_account.username}",
+        "password": "${local.user_account.password}",
+        "public_ssh_key": "${local.user_account.public_ssh_key}"
+      }
+    }
+  },
+  "resource": {
+    "vault_kv_secret_v2": {
+      "sql-1029_credentials": {
+        "mount": "pl.rachuna-net",
+        "name": "infrastructure/pve-rachuna-net/iac-proxmox/machine/1029",
+        "data_json": "${jsonencode({root_password = module.sql_1029.root_password, root_private_key = module.sql_1029.root_private_key, root_public_key = module.sql_1029.root_public_key, container_ipv4 = module.sql_1029.container_ipv4})}"
+      }
+    }
+  }
+}

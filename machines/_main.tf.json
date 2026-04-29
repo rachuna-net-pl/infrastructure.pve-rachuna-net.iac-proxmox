@@ -1,0 +1,31 @@
+{
+  "locals": {
+    "ct_storage_name": "storage.rachuna-net.pl:vztmpl",
+    "user_account": {
+      "username":"${data.vault_kv_secret_v2.auth_gitlab.data[\"vm_username\"]}",
+      "password":"${data.vault_kv_secret_v2.auth_gitlab.data[\"vm_password\"]}",
+      "public_ssh_key":"${data.vault_kv_secret_v2.auth_gitlab.data[\"public_ssh_key\"]}"
+    }
+  },
+  "data": {
+    "vault_kv_secret_v2": {
+      "auth_gitlab": {
+        "mount": "pl.rachuna-net",
+        "name": "auth/gitlab.com"
+      }
+    }
+  },
+  "terraform": {
+    "required_providers": {
+      "proxmox": {
+        "source": "bpg/proxmox",
+        "version": "~> 0.94.0"
+      },
+      "vault": {
+        "source": "hashicorp/vault",
+        "version": "~> 5.6.0"
+      }
+    },
+    "required_version": ">= 1.10.4"
+  }
+}

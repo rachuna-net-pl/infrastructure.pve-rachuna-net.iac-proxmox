@@ -1,0 +1,49 @@
+{
+  "module": {
+    "vault_1023": {
+      "source": "git::https://gitlab.com/pl.rachuna-net/artifacts/opentofu/proxmox-container.git?ref=v1.0.3",
+      "hostname": "vault-1023.rachuna-net.pl",
+      "description": "gitlab-runner s3",
+      "node_name": "pve-s3",
+      "ct_id": 1023,
+      "pool_id": "vault-consul",
+      "protection": true,
+      "start_on_boot": true,
+      "tags": ["vault", "consul", "ubuntu"],
+      "unprivileged": false,
+      "is_dmz": true,
+      "mac_address": "BC:24:11:B6:06:0E",
+      "cpu_cores": 2,
+      "memory": {
+        "dedicated": 1024,
+        "swap": 512
+      },
+      "disk": {
+        "storage_name": "storage.rachuna-net.pl",
+        "disk_size": 32
+      },
+      "operating_system": {
+        "template_file": "${join(\"/\", [local.ct_storage_name, \"ubuntu-24.04.tar.zst\"])}",
+        "type": "ubuntu"
+      },
+      "features": {
+        "keyctl": true,
+        "nesting": true
+      },
+      "user_account": {
+        "username": "${local.user_account.username}",
+        "password": "${local.user_account.password}",
+        "public_ssh_key": "${local.user_account.public_ssh_key}"
+      }
+    }
+  },
+  "resource": {
+    "vault_kv_secret_v2": {
+      "vault-1023_credentials": {
+        "mount": "pl.rachuna-net",
+        "name": "infrastructure/pve-rachuna-net/iac-proxmox/machine/1023",
+        "data_json": "${jsonencode({root_password = module.vault_1023.root_password, root_private_key = module.vault_1023.root_private_key, root_public_key = module.vault_1023.root_public_key, container_ipv4 = module.vault_1023.container_ipv4})}"
+      }
+    }
+  }
+}
